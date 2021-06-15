@@ -46,10 +46,10 @@ if __name__ == '__main__':
     axes[0].set_title('Dataset 1')
     axes[1].set_title('Dataset 2')
 
-    plt.show()
+    plt.savefig('datasets.png')
 
-    min_samples = [5, 10, 15, 20, 25]
-    epsilons = [0.1, 0.4, 0.7, 0.9]
+    min_samples = [5, 7, 11, 13, 15]
+    epsilons = [0.05, 0.1, 0.2, 0.3, 0.4]
     for min_sample in min_samples:
         for eps in epsilons:
             db = DBSCAN(eps=eps, min_samples=min_sample,)
@@ -58,11 +58,16 @@ if __name__ == '__main__':
             y_pred_2 = db.fit_predict(d_x_2)
             fig, axes = plt.subplots(1, 2)
             fig.set_size_inches(12, 6)
-            axes[0].scatter(d_x[:, 0], d_x[:, 1], c=y_pred, cmap='Paired')
-            axes[1].scatter(d_x_2[:, 0], d_x_2[:, 1], c=y_pred_2, cmap='Paired')
+            axes[0].scatter(d_x[:, 0][y_pred != -1], d_x[:, 1][y_pred != -1], c=y_pred[y_pred != -1], cmap='Paired')
+            axes[0].scatter(d_x[:, 0][y_pred == -1], d_x[:, 1][y_pred == -1], c=y_pred[y_pred == -1], cmap='Paired', label='outlier')
+            axes[1].scatter(d_x_2[:, 0][y_pred_2 != -1], d_x_2[:, 1][y_pred_2 != -1], c=y_pred_2[y_pred_2 != -1], cmap='Paired')
+            axes[1].scatter(d_x_2[:, 0][y_pred_2 == -1], d_x_2[:, 1][y_pred_2 == -1], c=y_pred_2[y_pred_2 == -1], cmap='Paired', label='outlier')
+
             axes[0].grid(True)
+            axes[0].legend()
             axes[1].grid(True)
+            axes[1].legend()
             axes[0].set_title('Dataset 1: predicted label min_sample: {} eps:{}'.format(min_sample, eps))
             axes[1].set_title('Dataset 2: predicted label min_sample: {} eps:{}'.format(min_sample, eps))
-            plt.show()
-
+            plt.savefig('min_sample_{}_eps_{}_.png'.format(min_sample, eps))
+            plt.close()
